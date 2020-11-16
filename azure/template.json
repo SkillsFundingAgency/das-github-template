@@ -5,8 +5,19 @@
         "resourceEnvironmentName": {
             "type": "string"
         },
+        "environmentName": {
+            "type": "string"
+        },
         "serviceName": {
             "type": "string"
+        },
+        "configNames": {
+            "type": "string",
+            "defaultValue": "__SolutionBaseName__"
+        },
+        "version": {
+            "type": "string",
+            "defaultValue": "1.0"
         },
         "tags": {
             "type": "object"

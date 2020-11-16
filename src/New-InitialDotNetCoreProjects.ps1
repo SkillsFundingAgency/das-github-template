@@ -130,4 +130,9 @@ $PipelineContent = $PipelineContent -replace "__SolutionBaseName__", $Prefix
 Write-Output "Updating SolutionBaseName in azure-pipelines.yml to $Prefix"
 Set-Content -Path $PSScriptRoot\..\azure-pipelines.yml -Value $PipelineContent
 
+$TemplateContent = Get-Content -Path $PSScriptRoot\..\azure\template.json
+$TemplateContent = $TemplateContent -replace "__SolutionBaseName__", $Prefix
+Write-Output "Updating SolutionBaseName in template.json to $Prefix"
+Set-Content -Path $PSScriptRoot\..\azure\template.json -Value $TemplateContent
+
 Write-Output "Done"
