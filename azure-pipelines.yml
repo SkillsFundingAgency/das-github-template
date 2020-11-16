@@ -4,8 +4,7 @@ trigger:
     include:
       - "*"
 
-pr:
-  - master
+pr: none
 
 workspace:
   clean: all
