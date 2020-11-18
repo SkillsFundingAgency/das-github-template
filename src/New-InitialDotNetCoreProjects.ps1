@@ -1,0 +1,138 @@
+<#
+.SYNOPSIS
+Create an initial dotnet core project
+
+.DESCRIPTION
+Create an initial dotnet core project,  also populating the project guids from the solution file into the csproj files.
+
+.PARAMETER Prefix
+The prefix for the project name.  
+The script will create:
+
+A web project called $Prefix
+A unit test project called $Prefix.UnitTests
+A solution file called $Prefix.sln
+
+.PARAMETER ProjectType
+The type of project to create. Valid options are currently:
+* mvc, web, webapp
+* webapi
+* console
+* classlib
+* function
+
+.EXAMPLE
+New-InitialDotNetCoreProjects.ps1 --Prefix SomeProject --ProjectType web
+
+#>
+
+[CmdletBinding()]
+param(
+    [Parameter(Mandatory=$true)]
+    [string] $Prefix,
+    [Parameter(Mandatory=$true)]
+    [ValidateSet("webapi","web","mvc","webapp", "console", "classlib", "function")]
+    [string] $ProjectType
+)
+
+function New-BasicProject {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string] $Name,
+        [Parameter(Mandatory=$true)]
+        [ValidateSet("webapi","web","mvc","webapp", "console", "classlib")]
+        [string] $ProjectType
+    )
+
+    $TestProject = $Name + ".UnitTests"
+
+    & "dotnet" "new" $ProjectType "--name" $Name "--framework" netcoreapp3.1
+    & "dotnet" "new" "nunit" "--name" $TestProject "--framework" netcoreapp3.1
+
+    & "dotnet" "new" "sln" "--name" $Name
+    & "dotnet" "sln" "add" "$($Name)/$($Name).csproj"
+    & "dotnet" "sln" "add" "$($TestProject)/$($TestProject).csproj"
+}
+
+function New-FunctionProject {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string] $Name
+    )
+
+    $testProject = $Name + ".UnitTests"
+
+    # Ensure the azure function dotnet cli template is installed
+    & "dotnet" "new" "-i" "Microsoft.Azure.WebJobs.ProjectTemplates::3.1.1624" | Out-Null
+
+    New-Item -Path $Name -ItemType Directory
+    Push-Location
+    Set-Location -Path $Name
+
+    & "dotnet" "new" "function" "--name" $Name "--AzureFunctionsVersion" V3
+
+    Pop-Location
+
+    & "dotnet" "new" "nunit" "--name" $TestProject "--framework" netcoreapp3.1
+
+    & "dotnet" "new" "sln" "--name" $Name
+    & "dotnet" "sln" "add" "$($Name)/$($Name).csproj"
+    & "dotnet" "sln" "add" "$($TestProject)/$($TestProject).csproj"
+}
+
+function Invoke-PopulateProjectGuidFromSolution {
+    param(        
+        [Parameter(Mandatory=$true)]
+        [string] $SolutionName
+    )
+
+    $SolutionContent = Get-Content -Path $SolutionName
+
+    # Projects in the solution file have a distict structure:
+    # Project("<Project Type ID>") = "<Project Name>", "<Path To Project>", "<Project Guid>"
+    # The following searches for lines that match that pattern, and iterates over them,  placing
+    # the Project Guid into the project file.
+
+    $Projects = $SolutionContent | Select-String -Pattern '^Project\(.*\) = ".*", "(.*)", "(.*)"$'
+    
+    foreach($Project in $Projects) {
+        $ProjectFile = Resolve-Path $Project.Matches.Groups[1].Value
+        $ProjectGuid = $Project.Matches.Groups[2].Value
+
+        [xml]$ProjectDocument = Get-Content -Path  $ProjectFile
+        
+        $ProjectGuidElement = $ProjectDocument.CreateElement("ProjectGuid")
+        $ProjectGuidElement.InnerText = $ProjectGuid 
+
+        $ProjectDocument.Project.PropertyGroup.AppendChild($ProjectGuidElement)
+
+        $ProjectDocument.Save($ProjectFile)
+    }
+}
+
+Set-Location -Path $PSScriptRoot
+Write-Output "Creating template project for '$Prefix' with type '$ProjectType'"
+
+switch($ProjectType) {
+    "function" { 
+        New-FunctionProject -Name $Prefix
+    }
+    default {
+        New-BasicProject -Name $Prefix -ProjectType $ProjectType
+    }
+}
+
+Write-Output "Updating project files with ProjectGuids from solution"
+Invoke-PopulateProjectGuidFromSolution -SolutionName "$($Prefix).sln"
+
+$PipelineContent = Get-Content -Path $PSScriptRoot\..\azure-pipelines.yml
+$PipelineContent = $PipelineContent -replace "__SolutionBaseName__", $Prefix
+Write-Output "Updating SolutionBaseName in azure-pipelines.yml to $Prefix"
+Set-Content -Path $PSScriptRoot\..\azure-pipelines.yml -Value $PipelineContent
+
+$TemplateContent = Get-Content -Path $PSScriptRoot\..\azure\template.json
+$TemplateContent = $TemplateContent -replace "__SolutionBaseName__", $Prefix
+Write-Output "Updating SolutionBaseName in template.json to $Prefix"
+Set-Content -Path $PSScriptRoot\..\azure\template.json -Value $TemplateContent
+
+Write-Output "Done"
