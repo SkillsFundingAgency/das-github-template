@@ -16,7 +16,6 @@ variables:
   value : 'any cpu'
 - name: BuildConfiguration
   value: 'release'
-- group: 'Prod Management Resources'
 
 pool:
   name: 'DAS - Continuous Integration'

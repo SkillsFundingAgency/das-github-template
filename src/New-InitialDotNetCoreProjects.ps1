@@ -44,14 +44,14 @@ function New-BasicProject {
         [string] $ProjectType
     )
 
-    $testProject = $Name + ".UnitTests"
+    $TestProject = $Name + ".UnitTests"
 
     & "dotnet" "new" $ProjectType "--name" $Name "--framework" netcoreapp3.1
-    & "dotnet" "new" "nunit" "--name" $testProject "--framework" netcoreapp3.1
+    & "dotnet" "new" "nunit" "--name" $TestProject "--framework" netcoreapp3.1
 
     & "dotnet" "new" "sln" "--name" $Name
     & "dotnet" "sln" "add" "$($Name)/$($Name).csproj"
-    & "dotnet" "sln" "add" "$($testProject)/$($testProject).csproj"
+    & "dotnet" "sln" "add" "$($TestProject)/$($TestProject).csproj"
 }
 
 function New-FunctionProject {
@@ -73,11 +73,11 @@ function New-FunctionProject {
 
     Pop-Location
 
-    & "dotnet" "new" "nunit" "--name" $testProject "--framework" netcoreapp3.1
+    & "dotnet" "new" "nunit" "--name" $TestProject "--framework" netcoreapp3.1
 
     & "dotnet" "new" "sln" "--name" $Name
     & "dotnet" "sln" "add" "$($Name)/$($Name).csproj"
-    & "dotnet" "sln" "add" "$($testProject)/$($testProject).csproj"
+    & "dotnet" "sln" "add" "$($TestProject)/$($TestProject).csproj"
 }
 
 function Invoke-PopulateProjectGuidFromSolution {
@@ -86,27 +86,27 @@ function Invoke-PopulateProjectGuidFromSolution {
         [string] $SolutionName
     )
 
-    $solutionContent = Get-Content -Path $SolutionName
+    $SolutionContent = Get-Content -Path $SolutionName
 
     # Projects in the solution file have a distict structure:
     # Project("<Project Type ID>") = "<Project Name>", "<Path To Project>", "<Project Guid>"
     # The following searches for lines that match that pattern, and iterates over them,  placing
     # the Project Guid into the project file.
 
-    $projects = $solutionContent | Select-String -Pattern '^Project\(.*\) = ".*", "(.*)", "(.*)"$'
+    $Projects = $SolutionContent | Select-String -Pattern '^Project\(.*\) = ".*", "(.*)", "(.*)"$'
     
-    foreach($project in $projects) {
-        $projectFile = Resolve-Path $project.Matches.Groups[1].Value
-        $projectGuid = $project.Matches.Groups[2].Value
+    foreach($Project in $Projects) {
+        $ProjectFile = Resolve-Path $Project.Matches.Groups[1].Value
+        $ProjectGuid = $Project.Matches.Groups[2].Value
 
-        [xml]$projectDocument = Get-Content -Path  $projectFile
+        [xml]$ProjectDocument = Get-Content -Path  $ProjectFile
         
-        $projectGuidElement = $projectDocument.CreateElement("ProjectGuid")
-        $projectGuidElement.InnerText = $projectGuid 
+        $ProjectGuidElement = $ProjectDocument.CreateElement("ProjectGuid")
+        $ProjectGuidElement.InnerText = $ProjectGuid 
 
-        $projectDocument.Project.PropertyGroup.AppendChild($projectGuidElement)
+        $ProjectDocument.Project.PropertyGroup.AppendChild($ProjectGuidElement)
 
-        $projectDocument.Save($projectFile)
+        $ProjectDocument.Save($ProjectFile)
     }
 }
 
