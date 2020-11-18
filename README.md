@@ -15,7 +15,7 @@ Example:
 
 `.\New-InitialDotNetCoreProjects.ps1 -Prefix <project name> -ProjectType <project type>`
 
-The PowerShell script creates the project structure and adds project guids to the csproj files for use with SonarCloud.
+The PowerShell script creates the project structure and adds project guids to the csproj files. Once the project structure has been created the script can be deleted.
 
 Supported project types are currently:
 
