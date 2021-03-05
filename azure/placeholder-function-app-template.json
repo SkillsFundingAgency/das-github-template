@@ -11,10 +11,6 @@
         "serviceName": {
             "type": "string"
         },
-        "configNames": {
-            "type": "string",
-            "defaultValue": "__SolutionBaseName__" //PLACEHOLDER
-        },
         "sharedEnvResourceGroup": {
             "type": "string"
         },
@@ -62,7 +58,8 @@
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "functionAppName": "[concat(variables('resourceNamePrefix'), '-fa')]",
-        "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]"
+        "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]",
+        "configNames": "__SolutionBaseName__" //PLACEHOLDER
     },
     "resources": [
         {
@@ -191,7 +188,7 @@
                                 },
                                 {
                                     "name": "ConfigNames",
-                                    "value": "[parameters('configNames')]"
+                                    "value": "[variables('configNames')]"
                                 },
                                 {
                                     "name": "Version",
