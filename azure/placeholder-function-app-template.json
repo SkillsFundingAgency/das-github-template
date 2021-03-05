@@ -224,7 +224,8 @@
                 }
             },
             "dependsOn": [
-                "[variables('resourceGroupName')]"
+                "[variables('resourceGroupName')]",
+                "app-service-plan"
             ]
         }
     ],
