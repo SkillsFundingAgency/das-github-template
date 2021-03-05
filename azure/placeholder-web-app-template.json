@@ -45,10 +45,10 @@
         "keyVaultCertificateName": {
             "type": "string"
         },
-        "<sharedFrontEndAppServicePlanName> or <sharedBackEndAppServicePlanName>": {
+        "<sharedFrontEndAppServicePlanName> or <sharedBackEndAppServicePlanName>": { //PLACEHOLDER
             "type": "string"
         },
-        "<sharedFrontEndSubnetResourceId> or <sharedBackEndSubnetResourceId>": {
+        "<sharedFrontEndSubnetResourceId> or <sharedBackEndSubnetResourceId>": { //PLACEHOLDER
             "type": "string"
         }
     },
@@ -134,13 +134,13 @@
                         "value": "[variables('appServiceName')]"
                     },
                     "appServicePlanName": {
-                        "value": "[parameters('<sharedFrontEndAppServicePlanName> or <sharedBackEndAppServicePlanName>')]"
+                        "value": "[parameters('<sharedFrontEndAppServicePlanName> or <sharedBackEndAppServicePlanName>')]" //PLACEHOLDER
                     },
                     "appServicePlanResourceGroup": {
                         "value": "[parameters('sharedEnvResourceGroup')]"
                     },
                     "subnetResourceId": {
-                        "value": "[parameters('<sharedFrontEndSubnetResourceId> or <sharedBackEndSubnetResourceId>')]"
+                        "value": "[parameters('<sharedFrontEndSubnetResourceId> or <sharedBackEndSubnetResourceId>')]" //PLACEHOLDER
                     },
                     "appServiceAppSettings": {
                         "value": {
