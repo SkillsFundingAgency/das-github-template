@@ -46,6 +46,9 @@
         },
         "<sharedFrontEndSubnetResourceId> or <sharedBackEndSubnetResourceId>": { //PLACEHOLDER
             "type": "string"
+        },
+        "<frontEndAccessRestrictions> or <backEndAccessRestrictions>": { //PLACEHOLDER
+            "type": "string"
         }
     },
     "variables": {
@@ -178,6 +181,9 @@
                     },
                     "certificateThumbprint": {
                         "value": "[reference('app-service-certificate').outputs.certificateThumbprint.value]"
+                    },
+                    "ipSecurityRestrictions": {
+                        "value": "[parameters('<frontEndAccessRestrictions> or <backEndAccessRestrictions>')]" //PLACEHOLDER
                     }
                 }
             },
