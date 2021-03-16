@@ -44,7 +44,7 @@
         "subnetDelegations": {
             "type": "array"
         },
-        "functionAccessRestrictions": {
+        "functionAppAccessRestrictions": {
             "type": "string"
         },
         "appServicePlanInstances": {
@@ -228,7 +228,7 @@
                         }
                     },
                     "ipSecurityRestrictions": {
-                        "value": "[parameters('functionAccessRestrictions')]"
+                        "value": "[parameters('functionAppAccessRestrictions')]"
                     }
                 }
             },
