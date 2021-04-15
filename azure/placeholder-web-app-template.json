@@ -48,7 +48,7 @@
             "type": "string"
         },
         "<frontEndAccessRestrictions> or <backEndAccessRestrictions>": { //PLACEHOLDER
-            "type": "string"
+            "type": "array"
         }
     },
     "variables": {
