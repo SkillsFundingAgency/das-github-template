@@ -85,12 +85,7 @@ AppSettings.Development.json file
     "ConfigNames": "SFA.DAS.Tools.Servicebus.Support,SFA.DAS.AuditApiClient",
     "EnvironmentName": "LOCAL",
     "Version": "1.0",
-    "APPINSIGHTS_INSTRUMENTATIONKEY": "",
-    "AzureAdConfiguration": {
-      "ClientId": "",
-      "ClientSecret": "",
-      "Authority": ""
-    }
+    "APPINSIGHTS_INSTRUMENTATIONKEY": ""
   }  
 ```
 
@@ -133,22 +128,6 @@ Data:
 }
 ```
 
-Row Key: SFA.DAS.AuditApiClient_1.0
-
-Partition Key: LOCAL
-
-Data:
-```json
-{
-	"ApiBaseUrl": "",
-	"ClientId": "",
-	"ClientSecret": "",
-	"IdentifierUri": "",
-	"Tenant": "",
-	"DatabaseConnectionString": "",
-	"ServiceBusConnectionString": ""
-}
-```
 ## 🔗 External Dependencies
 
 _Add details of any external dependencies that are required for the project to run, this could be details of authentication providers, API's or stubs/test harnesses._
