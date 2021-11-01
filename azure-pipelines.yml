@@ -12,11 +12,6 @@ variables:
 - name: BuildPlatform
   value: any cpu
 
-pool:
-  name: DAS - Continuous Integration
-  workspace:
-    clean: all
-
 resources:
   repositories:
   - repository: self
