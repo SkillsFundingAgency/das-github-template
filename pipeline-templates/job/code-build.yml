@@ -39,4 +39,4 @@ jobs:
     displayName: Publish Build Artifact
     inputs:
       targetPath: $(build.artifactstagingdirectory)/publish
-      artifactName: __BuildArtifactName__ #PLACEHOLDER
+      artifactName: ${{ parameters.SolutionBaseName }}

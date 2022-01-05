@@ -26,8 +26,8 @@ jobs:
             SubscriptionId: $(SubscriptionId)
             Location: $(ResourceGroupLocation)
             Environment: ${{ parameters.Environment }}
-            TemplatePath: $(Pipeline.Workspace)/__BuildArtifactName__/azure/template.json #PLACEHOLDER FOR __BuildArtifactName__
-            ParametersPath: $(Pipeline.Workspace)/__BuildArtifactName__/azure/template.parameters.json #PLACEHOLDER FOR __BuildArtifactName__
+            TemplatePath: $(Pipeline.Workspace)/${{ parameters.SolutionBaseName }}/azure/template.json
+            ParametersPath: $(Pipeline.Workspace)/${{ parameters.SolutionBaseName }}/azure/template.parameters.json
             IsMultiRepoCheckout: true
             TemplateSecrets:
               LoggingRedisConnectionString: $(LoggingRedisConnectionString)
@@ -59,4 +59,4 @@ jobs:
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
             AppServiceName: $(AppServiceName)
-            DeploymentPackagePath: $(Pipeline.Workspace)/__BuildArtifactName__/${{ parameters.SolutionBaseName }}.zip #PLACEHOLDER FOR __BuildArtifactName__
+            DeploymentPackagePath: $(Pipeline.Workspace)/${{ parameters.SolutionBaseName }}/${{ parameters.SolutionBaseName }}.zip
