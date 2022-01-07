@@ -3,7 +3,6 @@ parameters:
   SolutionBaseName:
   Environment:
   OverrideBlockOnPossibleDataLoss:
-  #PLACEHOLDER AppRoleAssignmentsServiceConnection:
 
 jobs:
 - deployment: DeployWebApp
@@ -48,13 +47,6 @@ jobs:
             DatabaseName: $(DatabaseName)
             OverrideBlockOnPossibleDataLoss: ${{ parameters.OverrideBlockOnPossibleDataLoss }}
             Environment: ${{ parameters.Environment }}
-        #PLACEHOLDER APP ROLE ASSIGNMENT TASK
-        # - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
-        #   parameters:
-        #     ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
-        #     ResourceName: $(AppServiceName)
-        #     Tenant: $(Tenant)
-        #     IsMultiRepoCheckout: true
         - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}

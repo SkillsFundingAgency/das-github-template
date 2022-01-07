@@ -2,7 +2,6 @@ parameters:
   ServiceConnection:
   SolutionBaseName:
   Environment:
-  #PLACEHOLDER AppRoleAssignmentsServiceConnection:
 
 jobs:
 - deployment: DeployFunctionApp
@@ -37,13 +36,6 @@ jobs:
             SourcePath: $(Pipeline.Workspace)/das-employer-config/Configuration/__ConfigFolderName__ #PLACEHOLDER
             TargetFileName: '*.schema.json'
             TableName: Configuration
-        #PLACEHOLDER APP ROLE ASSIGNMENT TASK
-        # - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
-        #   parameters:
-        #     ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
-        #     ResourceName: $(FunctionAppName)
-        #     Tenant: $(Tenant)
-        #     IsMultiRepoCheckout: true
         - template: azure-pipelines-templates/deploy/step/function-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
