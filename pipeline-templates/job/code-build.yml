@@ -36,7 +36,7 @@ jobs:
       OverWrite: true
 
   - task: PublishPipelineArtifact@1
-    displayName: Publish Artifact drop
+    displayName: Publish Build Artifact
     inputs:
       targetPath: $(build.artifactstagingdirectory)/publish
-      artifactName: drop
+      artifactName: ${{ parameters.SolutionBaseName }}
