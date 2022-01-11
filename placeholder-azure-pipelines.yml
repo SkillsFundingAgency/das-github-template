@@ -61,7 +61,6 @@ stages:
 # - stage: Deploy_TEST
 #   dependsOn: Build
 #   displayName: Deploy to TEST
-#   condition: and(succeeded(), eq(variables.Deploy, 'true'))
 #   variables:
 #   - group: DevTest Management Resources
 #   - group: TEST DevTest Shared Resources
@@ -74,7 +73,6 @@ stages:
 # - stage: Deploy_TEST2
 #   dependsOn: Build
 #   displayName: Deploy to TEST2
-#   condition: and(succeeded(), eq(variables.Deploy, 'true'))
 #   variables:
 #   - group: DevTest Management Resources
 #   - group: TEST2 DevTest Shared Resources
@@ -87,7 +85,6 @@ stages:
 # - stage: Deploy_PP
 #   dependsOn: Build
 #   displayName: Deploy to PP
-#   condition: and(succeeded(), eq(variables.Deploy, 'true'))
 #   variables:
 #   - group: PreProd Management Resources
 #   - group: PreProd Shared Resources
