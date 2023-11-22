@@ -269,7 +269,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'cors-policies.json')]",
+                    "uri": "[concat(variables('deploymentUrlBase'),'cors-policy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
