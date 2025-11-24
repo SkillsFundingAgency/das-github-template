@@ -1,0 +1,38 @@
+name: Configure Repository Settings
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  configure_repository_settings:
+    if: github.run_number == 1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure Repository Settings
+        run: |
+          gh api -X PUT '/orgs/SkillsFundingAgency/teams/das-platform-engineering/repos/$GITHUB_REPOSITORY' -f 'permission=admin'
+          gh api -X PUT '/orgs/SkillsFundingAgency/teams/das-contributor/repos/$GITHUB_REPOSITORY' -f 'permission=push'
+          gh api -X PUT '/orgs/SkillsFundingAgency/teams/das-security-alerts/repos/$GITHUB_REPOSITORY' -f 'permission=push'
+          FIRST_COMMIT=$(gh api repos/$GITHUB_REPOSITORY/commits --paginate --jq '.[-1].sha')
+          CREATOR=$(gh api repos/$GITHUB_REPOSITORY/commits/$FIRST_COMMIT --jq '.author.login')
+          gh api -x DELETE repos/$GITHUB_REPOSITORY/collaborators/$CREATOR
+          gh api -X PUT /repos/$GITHUB_REPOSITORY/branches/main/protection \
+            --input - <<< '{
+            "required_status_checks": {
+              "strict": true,
+              "contexts": []
+            },
+            "enforce_admins": true,
+            "required_pull_request_reviews": {
+              "dismiss_stale_reviews": true,
+              "require_code_owner_reviews": true,
+              "required_approving_review_count": 1,
+              "require_last_push_approval": true
+            },
+            "restrictions": null
+          }'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
