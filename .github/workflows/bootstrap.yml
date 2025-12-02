@@ -1,10 +1,11 @@
 name: Configure Repository Settings
 
 on:
-  workflow_dispatch:
   push:
     branches:
-      - main
+      - 'main'
+    paths:
+      - 'as-manifest.yml'
 
 jobs:
   configure_repository_settings:
@@ -13,9 +14,9 @@ jobs:
     steps:
       - name: Configure Repository Settings
         run: |
-          gh api -X PUT '/orgs/SkillsFundingAgency/teams/das-platform-engineering/repos/$GITHUB_REPOSITORY' -f 'permission=admin'
-          gh api -X PUT '/orgs/SkillsFundingAgency/teams/das-contributor/repos/$GITHUB_REPOSITORY' -f 'permission=push'
-          gh api -X PUT '/orgs/SkillsFundingAgency/teams/das-security-alerts/repos/$GITHUB_REPOSITORY' -f 'permission=push'
+          gh api -X PUT 'orgs/SkillsFundingAgency/teams/das-platform-engineering/repos/$GITHUB_REPOSITORY' -f 'permission=admin'
+          gh api -X PUT 'orgs/SkillsFundingAgency/teams/das-contributor/repos/$GITHUB_REPOSITORY' -f 'permission=push'
+          gh api -X PUT 'orgs/SkillsFundingAgency/teams/das-security-alerts/repos/$GITHUB_REPOSITORY' -f 'permission=push'
           FIRST_COMMIT=$(gh api repos/$GITHUB_REPOSITORY/commits --paginate --jq '.[-1].sha')
           CREATOR=$(gh api repos/$GITHUB_REPOSITORY/commits/$FIRST_COMMIT --jq '.author.login')
           gh api -x DELETE repos/$GITHUB_REPOSITORY/collaborators/$CREATOR
@@ -33,6 +34,38 @@ jobs:
               "require_last_push_approval": true
             },
             "restrictions": null
+          }'
+          gh api -X PATCH 'repos/$GITHUB_REPOSITORY/properties/values' \
+            --input - <<< '{
+            "properties": [
+              {
+                "property_name": "portfolio",
+                "value": "Skills Group"
+              },
+              {
+                "property_name": "service_line",
+                "value": "Work Based Skills Directorate Admin - Apprenticeships"
+              }
+            ]
+          }'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
+
+  configure_custom_properties:
+    if: github.run_number > 1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure "product" Custom Property
+        run: |
+          product=$(yq '.["Product name"]' as-manifest.yml)
+          gh api -X PATCH 'repos/$GITHUB_REPOSITORY/properties/values' \
+            --input - <<< '{
+            "properties": [
+              {
+                "property_name": "product",
+                "value": "$product"
+              }
+            ]
           }'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
