@@ -12,6 +12,11 @@ jobs:
     if: github.run_number == 1
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/create-github-app-token@v2.2.1
+        id: app-token
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_KEY }}
       - name: Configure Repository Settings
         run: |
           gh api -X PUT 'orgs/SkillsFundingAgency/teams/das-platform-engineering/repos/$GITHUB_REPOSITORY' -f 'permission=admin'
@@ -49,12 +54,17 @@ jobs:
             ]
           }'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
   configure_custom_properties:
     if: github.run_number > 1
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/create-github-app-token@v2.2.1
+        id: app-token
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          private-key: ${{ secrets.GH_APP_KEY }}
       - name: Configure "product" Custom Property
         run: |
           product=$(yq '.["Product name"]' as-manifest.yml)
@@ -68,4 +78,4 @@ jobs:
             ]
           }'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_PAT }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
