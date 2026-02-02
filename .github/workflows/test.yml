@@ -1,0 +1,16 @@
+name: Call Configuration Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  call_workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          gh api \
+            --method POST \
+            /repos/SkillsFundingAgency/das-platform-building-blocks/dispatches \
+            -f event_type=repository_created \
+            -F "client_payload[message]=\"Hello, World!\"" \
+            -F "client_payload[repository]=\"$GITHUB_REPOSITORY\""
