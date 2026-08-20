@@ -58,6 +58,10 @@
             "type": "string",
             "defaultValue": "1"
         },
+        "appServicePlanTier": {
+            "type": "string",
+            "defaultValue": "standard"
+        },
         "logAnalyticsSubscriptionId": {
             "type": "string",
             "defaultValue": "[subscription().subscriptionId]"
@@ -166,6 +170,9 @@
                     },
                     "aspInstances": {
                         "value": "[parameters('appServicePlanInstances')]"
+                    },
+                    "nonASETier": {
+                        "value": "[parameters('appServicePlanTier')]"
                     }
                 }
             },
